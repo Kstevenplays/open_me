@@ -12,6 +12,15 @@
       --peach:#edc2ab;--gold:#d9ad65;--wine:#6d3b49;--ink:#3d2d32;
       --soft-shadow:rgba(91,53,63,.18);--glass:rgba(255,248,239,.92);
       --paper:#fffdf9;--muted:#805f67;--backdrop:rgba(61,45,50,.86);
+      /* Gift box maroon palette */
+      --gift-body-light:#9B2335;--gift-body-dark:#5C0F1E;
+      --gift-lid:#B03045;--gift-bow:#C0394F;--gift-bow-dark:#7A1426;
+      --gift-ribbon-light:#F2D078;--gift-ribbon-dark:#B88A32;
+      /* Bright-red alternative:
+      --gift-body-light:#D62839;--gift-body-dark:#8F1021;
+      --gift-lid:#E33B4F;--gift-bow:#D62839;--gift-bow-dark:#8F1021;
+      --gift-ribbon-light:#F2D078;--gift-ribbon-dark:#B88A32;
+      */
     }
     *{box-sizing:border-box}
     html{scroll-behavior:smooth}
@@ -22,84 +31,70 @@
     /* Loading and gift opening */
     .loader{position:fixed;inset:0;z-index:300;display:grid;place-items:center;background:var(--cream);transition:opacity 800ms ease,visibility 800ms ease}
     .loader.is-hidden{opacity:0;visibility:hidden}
-    .loader-heart{width:42px;height:42px;transform:rotate(-45deg);background:var(--pink-bright);animation:heartPulse 900ms ease-in-out infinite}
+    .loader-heart{width:42px;height:42px;transform:rotate(-45deg);background:var(--pink-bright);animation:giftHeartPulse 900ms ease-in-out infinite}
     .loader-heart:before,.loader-heart:after{content:"";position:absolute;width:42px;height:42px;border-radius:50%;background:inherit}
     .loader-heart:before{top:-21px}.loader-heart:after{left:21px}
-    @keyframes heartPulse{50%{transform:rotate(-45deg) scale(1.12)}}
+    @keyframes giftHeartPulse{50%{transform:rotate(-45deg) scale(1.12)}}
 
-    .opening{
-      position:fixed;inset:0;z-index:250;min-height:100dvh;
-      display:flex;align-items:center;justify-content:center;
-      text-align:center;overflow:hidden;
-      background:radial-gradient(circle at 50% 44%,rgba(255,255,255,.9),transparent 24rem),linear-gradient(135deg,var(--cream),var(--pink-pale));
-      transition:opacity 900ms ease,visibility 900ms ease;
-    }
+    .opening{position:fixed;inset:0;z-index:250;min-height:100dvh;display:flex;align-items:center;justify-content:center;text-align:center;overflow:hidden;padding:max(16px,env(safe-area-inset-top)) max(14px,env(safe-area-inset-right)) max(16px,env(safe-area-inset-bottom)) max(14px,env(safe-area-inset-left));background:radial-gradient(circle at 50% 42%,rgba(255,255,255,.96),transparent 26rem),linear-gradient(135deg,var(--cream),var(--pink-pale));transition:opacity 900ms ease,visibility 900ms ease}
+    .opening:before{content:"";position:absolute;inset:0;pointer-events:none;background-image:radial-gradient(rgba(109,59,73,.10) .5px,transparent .5px);background-size:5px 5px;opacity:.16;mask-image:linear-gradient(to bottom,transparent,black 18%,black 82%,transparent)}
+    .opening:after{content:"";position:absolute;inset:0;pointer-events:none;box-shadow:inset 0 0 120px rgba(109,59,73,.12)}
     .opening.is-opening{opacity:0;visibility:hidden}
-    .opening-inner{width:min(100%,560px);min-height:100dvh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;padding:24px 16px}
-    .gift-button{
-      width:100%;border:0;outline:none;background:none;padding:0;margin:0;
-      display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;
-      color:inherit;cursor:pointer;
-    }
-    .gift-button:focus{outline:none}
-    .gift-button:focus-visible{outline:3px solid rgba(223,155,168,.72);outline-offset:8px;border-radius:24px}
-    .opening-name{
-      /* CHANGE THE NAME LABEL TEXT HERE */
-      margin:0;font-family:"Trebuchet MS",Arial,sans-serif;
-      font-size:.72rem;letter-spacing:.20em;text-transform:uppercase;color:var(--muted);
-    }
-    .gift-stage{
-      position:relative;width:clamp(220px,70vw,280px);height:clamp(180px,58vw,220px);
-      display:flex;align-items:flex-end;justify-content:center;
-      transform-origin:center bottom;animation:giftFloat 2.8s ease-in-out infinite alternate;
-    }
-    .gift-shadow{position:absolute;bottom:2px;width:72%;height:18px;border-radius:50%;background:rgba(109,59,73,.16);filter:blur(8px);animation:shadowPulse 2.8s ease-in-out infinite alternate}
-    .gift{
-      position:absolute;bottom:18px;width:72%;height:56%;border-radius:10px 10px 14px 14px;
-      background:linear-gradient(90deg,var(--pink) 0 66%,var(--pink-bright) 66% 100%);
-      box-shadow:0 18px 34px var(--soft-shadow);
-    }
-    .gift-lid{
-      position:absolute;z-index:3;left:-7%;top:-15%;width:114%;height:25%;
-      border-radius:8px;background:var(--pink);
-      box-shadow:0 8px 16px rgba(109,59,73,.12);
-      transform-origin:bottom center;animation:lidWiggle 5s ease-in-out infinite;
-    }
-    .ribbon-vertical{position:absolute;z-index:4;left:50%;top:-15%;bottom:0;width:18%;transform:translateX(-50%);background:var(--cream);box-shadow:inset -4px 0 8px rgba(217,173,101,.10)}
-    .bow{
-      position:absolute;z-index:5;left:50%;top:-50%;width:70%;height:68%;
-      transform:translateX(-50%);transform-origin:center bottom;
-    }
-    .bow-loop{
-      position:absolute;top:8%;width:48%;height:58%;border:8px solid var(--gold);
-      border-radius:70% 45% 70% 45%;box-shadow:inset 0 4px 8px rgba(255,255,255,.45);
-    }
-    .bow-loop.left{left:2%;transform:rotate(-18deg)}
-    .bow-loop.right{right:2%;transform:scaleX(-1) rotate(-18deg)}
-    .bow-knot{position:absolute;z-index:2;left:50%;top:47%;width:22%;aspect-ratio:1;border-radius:50%;transform:translate(-50%,-50%);background:linear-gradient(135deg,#e5c77d,var(--gold))}
-    .bow-tail{position:absolute;top:74%;width:18%;height:34%;background:var(--gold);clip-path:polygon(0 0,100% 0,50% 100%)}
-    .bow-tail.left{left:31%;transform:rotate(18deg)}.bow-tail.right{right:31%;transform:rotate(-18deg)}
-    .tap-hand{position:absolute;z-index:7;right:-2%;top:22%;font-size:22px;transform-origin:bottom center;animation:tapHand 1.8s ease-in-out infinite}
-    .opening-title{
-      margin:0;font-family:"Segoe Script","Bradley Hand",cursive;
-      font-size:clamp(1.2rem,4vw,1.7rem);color:var(--wine);
-      text-shadow:0 0 12px rgba(223,155,168,.35);animation:titleGlow 2.2s ease-in-out infinite alternate;
-    }
-    .opening-sparkle{position:absolute;width:5px;height:5px;border-radius:50%;background:var(--gold);box-shadow:0 0 8px var(--gold);opacity:.65;animation:sparkleFloat 4s ease-in-out infinite alternate}
-    .opening-sparkle.one{left:-8%;top:34%}.opening-sparkle.two{right:-10%;top:20%;animation-delay:-1.5s}.opening-sparkle.three{right:4%;bottom:6%;animation-delay:-3s}
-    .opening.is-opening .gift-stage{animation:giftShake 280ms ease-in-out 2}
-    .opening.is-opening .gift-lid{animation:none;transform:translate(70px,-88px) rotate(38deg)}
-    .opening.is-opening .bow{animation:bowFly 620ms ease-out forwards}
-    .opening.is-opening .opening-sparkle{animation:rayBurst 700ms ease-out forwards}
-    @keyframes giftFloat{to{transform:translateY(-8px)}}
-    @keyframes shadowPulse{to{transform:scale(.82);opacity:.72}}
-    @keyframes lidWiggle{0%,88%,100%{transform:rotate(0)}92%{transform:rotate(-2deg)}96%{transform:rotate(2deg)}}
-    @keyframes giftShake{50%{transform:translateX(-6px) rotate(-2deg)}}
-    @keyframes bowFly{to{transform:translate(-50%, -90px) rotate(18deg);opacity:0}}
-    @keyframes rayBurst{to{transform:translate(var(--ray-x,20px),var(--ray-y,-70px)) scale(.2);opacity:0}}
-    @keyframes tapHand{45%{transform:translate(-8px,-6px) rotate(-12deg)}55%{transform:translate(-8px,-6px) rotate(-12deg)}}
-    @keyframes titleGlow{to{text-shadow:0 0 18px rgba(223,155,168,.65)}}
-    @keyframes sparkleFloat{to{transform:translateY(-12px) scale(.7);opacity:.25}}
+    .opening-inner{position:relative;width:min(100%,620px);min-height:100dvh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:clamp(6px,1.2vh,10px)}
+    .opening-button{width:min(94vw,520px);min-height:44px;border:0;outline:none;background:transparent;padding:0;margin:0;color:inherit;cursor:pointer;touch-action:manipulation}
+    .opening-button:focus{outline:none}
+    .opening-button:focus-visible{outline:3px solid rgba(223,155,168,.72);outline-offset:8px;border-radius:28px}
+    .gift-petal{position:absolute;z-index:-1;width:9px;height:14px;border-radius:70% 30% 70% 30%;background:var(--gift-bow);opacity:.18;animation:giftPetal 16s linear infinite}
+    .gift-petal.one{left:8%;top:-8%;animation-delay:-2s}.gift-petal.two{right:12%;top:-12%;background:var(--gold);animation-delay:-7s}.gift-petal.three{left:18%;top:-18%;background:var(--gift-bow-dark);animation-delay:-12s}
+    .gift-spark{position:absolute;width:7px;height:7px;border-radius:50%;background:var(--gold);box-shadow:0 0 10px var(--gold);opacity:.55;animation:giftTwinkle 2.4s ease-in-out infinite alternate}
+    .gift-spark.one{left:18%;top:34%}.gift-spark.two{right:16%;top:28%;animation-delay:-1s}.gift-spark.three{right:24%;bottom:30%;animation-delay:-1.7s}
+    .gift-stage{position:relative;width:clamp(220px,58vw,340px);height:clamp(220px,62dvh,390px);margin:0 auto;display:grid;place-items:center;isolation:isolate;animation:giftDrop 850ms cubic-bezier(.2,.8,.2,1) 300ms both,giftFloat 3.8s ease-in-out 1.2s infinite alternate}
+    .gift-art{width:100%;height:100%;overflow:visible;filter:drop-shadow(0 18px 22px rgba(92,15,30,.24));will-change:transform}
+    .gift-art .gift-body{fill:url(#giftBody)}
+    .gift-art .gift-lid{fill:url(#giftLid);filter:drop-shadow(0 8px 8px rgba(109,59,73,.12))}
+    .gift-art .gift-ribbon{fill:url(#giftRibbon)}
+    .gift-art .gift-highlight{fill:none;stroke:var(--paper);stroke-width:4;stroke-linecap:round;opacity:.38}
+    .gift-art .gift-bow-loop{fill:url(#giftBow);stroke:var(--gift-bow-dark);stroke-width:2.5}
+    .gift-art .gift-bow-tail{fill:var(--gift-bow-dark)}
+    .gift-art .gift-bow-knot{fill:var(--gift-bow-dark);stroke:var(--gift-body-dark);stroke-width:2}
+    .gift-shadow{position:absolute;z-index:-3;left:50%;bottom:3%;width:58%;height:18px;transform:translateX(-50%);border-radius:50%;background:rgba(92,15,30,.24);filter:blur(8px)}
+    .gift-glow{position:absolute;z-index:-1;left:50%;top:49%;width:48%;aspect-ratio:1;transform:translate(-50%,-50%) scale(.6);border-radius:50%;background:radial-gradient(circle,var(--paper),rgba(217,173,101,.28) 42%,rgba(155,35,53,.12) 58%,transparent 72%);opacity:0}
+    .touch-hand{position:absolute;z-index:5;right:13%;bottom:22%;font-size:24px;opacity:0;transform:translate(0,8px);pointer-events:none}
+    .touch-hand.is-visible{animation:giftTouchHint 1.8s ease-in-out 1}
+    .gift-title{margin:0;font-family:"Segoe Script","Bradley Hand",cursive;font-size:clamp(18px,4.5vw,22px);color:var(--wine);text-shadow:0 0 12px rgba(223,155,168,.30);opacity:0;animation:giftTextUp 700ms 900ms ease forwards}
+    .gift-subtitle{margin:-4px 0 0;font-family:"Trebuchet MS",Arial,sans-serif;font-size:.78rem;letter-spacing:.06em;color:var(--muted);opacity:0;animation:giftTextUp 700ms 1050ms ease forwards}
+    .gift-flash{position:absolute;inset:0;background:radial-gradient(circle at 50% 55%,var(--paper),rgba(217,173,101,.32) 38%,rgba(155,35,53,.10) 58%,transparent 75%);opacity:0;pointer-events:none}
+    .opening.is-opening .gift-stage{animation:giftShake 500ms ease-in-out,giftFadeLift 900ms 500ms ease forwards}
+    .opening.is-opening .gift-art .gift-bow{animation:giftBowPop 600ms ease-out forwards}
+    .opening.is-opening .gift-art .gift-lid{animation:giftLidLift 700ms 180ms ease-out forwards}
+    .opening.is-opening .gift-glow{animation:giftGlowRise 900ms 180ms ease-out forwards}
+    .opening.is-opening .gift-flash{animation:giftFlash 800ms 500ms ease-out forwards}
+    .gift-rise{position:absolute;z-index:8;width:14px;height:14px;border-radius:50%;pointer-events:none;animation:giftRise 1.2s ease-out forwards}
+    .gift-rise.heart{background:var(--gift-bow);transform:rotate(-45deg);border-radius:2px}
+    .gift-rise.heart:before,.gift-rise.heart:after{content:"";position:absolute;width:14px;height:14px;border-radius:50%;background:inherit}
+    .gift-rise.heart:before{top:-7px}.gift-rise.heart:after{left:7px}
+    .gift-rise.balloon{width:18px;height:24px;border-radius:50%;background:var(--gift-bow-dark)}
+    .gift-rise.spark{width:7px;height:7px;background:var(--gold);clip-path:polygon(50% 0,62% 38%,100% 50%,62% 62%,50% 100%,38% 62%,0 50%,38% 38%)}
+    .opening.is-opening .gift-title,.opening.is-opening .gift-subtitle{opacity:0}
+    @keyframes giftFadeDown{to{opacity:1}}
+    @keyframes giftTextUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+    @keyframes giftDrop{from{opacity:0;transform:translateY(-35px) scale(.94)}70%{transform:translateY(5px) scale(1.02)}to{opacity:1;transform:none}}
+    @keyframes giftFloat{to{transform:translateY(-8px) rotate(.8deg)}}
+    @keyframes giftTwinkle{to{opacity:.18;transform:scale(.62)}}
+    @keyframes giftPetal{10%{opacity:.22}100%{transform:translateY(115vh) translateX(40px) rotate(260deg);opacity:0}}
+    @keyframes giftShake{20%{transform:translateX(-5px) rotate(-2deg)}40%{transform:translateX(5px) rotate(2deg)}60%{transform:translateX(-3px) rotate(-1deg)}80%{transform:translateX(3px) rotate(1deg)}}
+    @keyframes giftBowPop{to{transform:translate(0,-95px) rotate(28deg) scale(.25);opacity:0}}
+    @keyframes giftLidLift{60%{transform:translateY(-90px) rotate(-12deg)}100%{transform:translate(90px,-70px) rotate(28deg);opacity:.2}}
+    @keyframes giftGlowRise{30%{opacity:.9;transform:translate(-50%,-85%) scale(.9)}100%{opacity:0;transform:translate(-50%,-180%) scale(1.35)}}
+    @keyframes giftFadeLift{to{opacity:0;transform:translateY(-18px) scale(.96)}}
+    @keyframes giftFlash{25%{opacity:.92}100%{opacity:0}}
+    @keyframes giftTouchHint{35%{opacity:1;transform:translate(-8px,-8px) scale(.94)}70%{opacity:.8;transform:translate(-8px,-8px) scale(.94)}100%{opacity:0;transform:translate(0,8px)}}
+    @keyframes giftRise{to{transform:translate(var(--dx),-260px) rotate(220deg);opacity:0}}
+    @media(hover:hover) and (pointer:fine){.opening-button:hover .gift-art{filter:drop-shadow(0 22px 28px rgba(92,15,30,.28))}.opening-button:hover .gift-glow{opacity:.72;transform:translate(-50%,-50%) scale(.78)}.opening-button:hover .gift-bow-loop{animation:giftBowWiggle 600ms ease-in-out}}
+    @keyframes giftBowWiggle{35%{transform:rotate(-5deg)}70%{transform:rotate(5deg)}}
+    @media(max-width:599px){.gift-stage{width:clamp(210px,70vw,300px);height:clamp(210px,52dvh,330px)}.gift-title{font-size:20px}.gift-subtitle{font-size:.82rem}}
+    @media(orientation:landscape) and (max-height:500px){.opening-inner{gap:4px}.gift-stage{width:clamp(170px,34vw,250px);height:clamp(170px,64dvh,250px)}.gift-title{margin-top:-8px}.gift-subtitle{margin-top:-6px}}
+    @media(prefers-reduced-motion:reduce){.gift-petal,.gift-spark,.gift-stage,.gift-art .gift-bow-loop,.touch-hand{animation:none!important}.opening.is-opening .gift-stage,.opening.is-opening .gift-art .gift-bow,.opening.is-opening .gift-art .gift-lid,.opening.is-opening .gift-glow,.opening.is-opening .gift-flash{animation:giftReducedFade 500ms ease-out forwards}@keyframes giftReducedFade{to{opacity:0}}}
 
     /* Background, balloons and hero */
     .background{position:fixed;inset:0;z-index:-5;overflow:hidden;background:radial-gradient(circle at 15% 18%,rgba(223,155,168,.34),transparent 28rem),linear-gradient(135deg,var(--cream),var(--pink-pale) 52%,var(--cream))}
@@ -158,7 +153,7 @@
 
     /* Letter */
     /* Letter */
-    .letter-section{max-width:680px;margin:20px auto 90px;padding:0 20px;text-align:center}.letter-envelope{position:relative;width:min(520px,100%);height:310px;margin:auto;border:1px solid var(--gold);border-radius:18px;background:var(--paper);box-shadow:0 18px 44px var(--soft-shadow),0 5px 14px rgba(109,59,73,.08);transition:height 700ms ease,background 700ms ease,box-shadow 700ms ease}.letter-envelope:after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;opacity:.14;background-image:radial-gradient(rgba(109,59,73,.22) .5px,transparent .5px);background-size:5px 5px}.letter-open-button{position:absolute;inset:0;width:100%;border:0;border-radius:inherit;background:transparent;cursor:pointer;z-index:4}.letter-flap{position:absolute;left:-1px;right:-1px;top:-1px;height:176px;border-radius:17px 17px 8px 8px;clip-path:polygon(0 0,50% 82%,100% 0);background:linear-gradient(135deg,var(--pink-pale),var(--cream));transform-origin:top;transition:transform 700ms ease}.letter-envelope.is-open .letter-flap,.letter-envelope.flap-opening .letter-flap{transform:rotateX(180deg) translateZ(1px)}.letter-seal{position:absolute;z-index:3;left:50%;top:112px;width:64px;height:64px;transform:translate(-50%,0);border:4px solid rgba(255,255,255,.18);border-radius:50%;background:var(--pink-bright);box-shadow:0 7px 18px var(--soft-shadow);transition:opacity 280ms ease,transform 280ms ease}.letter-seal span{display:grid;place-items:center;height:100%;font-size:1.45rem;color:var(--paper)}.letter-envelope.seal-popping .letter-seal{animation:sealPop 280ms ease both}.letter-envelope.is-open .letter-seal{opacity:0;transform:translate(-50%,-18px) scale(.4);pointer-events:none}@keyframes sealPop{50%{transform:translate(-50%,0) scale(1.12) rotate(-4deg)}100%{transform:translate(-50%,-12px) scale(.92)}}.letter-tap{position:absolute;left:50%;bottom:46px;transform:translateX(-50%);font-family:"Segoe Script","Bradley Hand",cursive;font-size:.82rem;color:var(--wine)}.letter-envelope.is-open .letter-open-button{visibility:hidden;pointer-events:none}.letter-card{position:absolute;z-index:2;left:28px;right:28px;top:72px;margin:0 auto;padding:26px 26px 22px;border:1px solid var(--gold);border-radius:12px;background:var(--paper);box-shadow:0 14px 34px var(--soft-shadow);opacity:0;transform:translateY(82px);pointer-events:none}.letter-envelope.is-open{height:auto;min-height:310px;padding:34px 0 24px;background:transparent;border-color:transparent;box-shadow:none}.letter-envelope.is-open .letter-card{position:relative;left:auto;right:auto;top:auto;width:100%;margin:36px auto 0;opacity:1;transform:translateY(0);pointer-events:auto;transition:transform 700ms cubic-bezier(.2,.8,.2,1),opacity 500ms ease}.letter-mini-heart{display:grid;place-items:center;width:42px;height:42px;margin:0 auto 14px;border-radius:50%;background:var(--pink-pale);color:var(--pink-bright);font-size:1.05rem}.letter-greeting,.letter-content p,.letter-signature{font-family:"Segoe Script","Bradley Hand",cursive}.letter-greeting{margin:0 0 20px;font-size:clamp(.95rem,2vw,1.12rem);color:var(--wine)}.letter-content p{margin:0 0 14px;font-size:clamp(1.02rem,2.2vw,1.35rem);line-height:1.9;opacity:0;transform:translateY(10px)}.letter-envelope.is-open .letter-content p{animation:letterLineRise 500ms ease forwards}@keyframes letterLineRise{to{opacity:1;transform:translateY(0)}}.letter-signature{margin:18px 0 0;font-size:clamp(1.08rem,2.4vw,1.4rem);color:var(--wine);opacity:0}.letter-envelope.is-open .letter-signature{animation:signatureWrite 700ms ease forwards}.letter-signature span{display:inline-block}@keyframes signatureWrite{from{opacity:0;clip-path:inset(0 100% 0 0)}to{opacity:1;clip-path:inset(0 0 0 0)}}.close-letter{display:none;margin:20px auto 0;border:1px solid var(--gold);border-radius:999px;padding:10px 16px;background:var(--glass);cursor:pointer;font-family:"Trebuchet MS",Arial,sans-serif;font-size:.78rem}.letter-envelope.is-open .close-letter{display:block}.letter-heart{position:absolute;z-index:6;width:8px;height:8px;transform:rotate(-45deg);background:var(--pink-bright);pointer-events:none;animation:letterHeartFloat 900ms ease-out forwards}.letter-heart:before,.letter-heart:after{content:"";position:absolute;width:8px;height:8px;border-radius:50%;background:inherit}.letter-heart:before{top:-4px}.letter-heart:after{left:4px}@keyframes letterHeartFloat{to{opacity:0;transform:translateY(-70px) rotate(-45deg) scale(.45)}}
+    .letter-section{max-width:680px;margin:20px auto 90px;padding:0 20px;text-align:center}.letter-envelope{position:relative;width:min(520px,100%);height:310px;margin:auto;border:1px solid var(--gold);border-radius:18px;background:var(--paper);box-shadow:0 18px 44px var(--soft-shadow),0 5px 14px rgba(109,59,73,.08);transition:height 700ms ease,background 700ms ease,box-shadow 700ms ease}.letter-envelope:after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;opacity:.14;background-image:radial-gradient(rgba(109,59,73,.22) .5px,transparent .5px);background-size:5px 5px}.letter-open-button{position:absolute;inset:0;width:100%;border:0;border-radius:inherit;background:transparent;cursor:pointer;z-index:4}.letter-flap{position:absolute;left:-1px;right:-1px;top:-1px;height:176px;border-radius:17px 17px 8px 8px;clip-path:polygon(0 0,50% 82%,100% 0);background:linear-gradient(135deg,var(--pink-pale),var(--cream));transform-origin:top;transition:transform 700ms ease}.letter-envelope.is-open .letter-flap,.letter-envelope.flap-opening .letter-flap{transform:rotateX(180deg) translateZ(1px)}.letter-seal{position:absolute;z-index:3;left:50%;top:112px;width:64px;height:64px;transform:translate(-50%,0);border:4px solid rgba(255,255,255,.18);border-radius:50%;background:var(--pink-bright);box-shadow:0 7px 18px var(--soft-shadow);transition:opacity 280ms ease,transform 280ms ease}.letter-seal span{display:grid;place-items:center;height:100%;font-size:1.45rem;color:var(--paper)}.letter-envelope.seal-popping .letter-seal{animation:sealPop 280ms ease both}.letter-envelope.is-open .letter-seal{opacity:0;transform:translate(-50%,-18px) scale(.4);pointer-events:none}@keyframes sealPop{50%{transform:translate(-50%,0) scale(1.12) rotate(-4deg)}100%{transform:translate(-50%,-12px) scale(.92)}}.letter-tap{position:absolute;left:50%;bottom:46px;transform:translateX(-50%);font-family:"Segoe Script","Bradley Hand",cursive;font-size:.82rem;color:var(--wine)}.letter-envelope.is-open .letter-open-button{visibility:hidden;pointer-events:none}.letter-card{position:absolute;z-index:2;left:28px;right:28px;top:72px;margin:0 auto;padding:26px 26px 22px;border:1px solid var(--gold);border-radius:12px;background:var(--paper);box-shadow:0 14px 34px var(--soft-shadow);opacity:0;transform:translateY(82px);pointer-events:none}.letter-envelope.is-open{height:auto;min-height:310px;padding:34px 0 24px;background:transparent;border-color:transparent;box-shadow:none}.letter-envelope.is-open .letter-card{position:relative;left:auto;right:auto;top:auto;width:100%;margin:36px auto 0;opacity:1;transform:translateY(0);pointer-events:auto;transition:transform 700ms cubic-bezier(.2,.8,.2,1),opacity 500ms ease}.letter-mini-heart{display:grid;place-items:center;width:42px;height:42px;margin:0 auto 14px;border-radius:50%;background:var(--pink-pale);color:var(--pink-bright);font-size:1.05rem} .letter-greeting,.letter-content p{font-family:"Segoe Script","Bradley Hand",cursive}.letter-greeting{margin:0 0 20px;font-size:clamp(.95rem,2vw,1.12rem);color:var(--wine)}.letter-content p{margin:0 0 14px;font-size:clamp(1.02rem,2.2vw,1.35rem);line-height:1.9;opacity:0;transform:translateY(10px)}.letter-envelope.is-open .letter-content p{animation:letterLineRise 500ms ease forwards}@keyframes letterLineRise{to{opacity:1;transform:translateY(0)}}.close-letter{display:none;margin:20px auto 0;border:1px solid var(--gold);border-radius:999px;padding:10px 16px;background:var(--glass);cursor:pointer;font-family:"Trebuchet MS",Arial,sans-serif;font-size:.78rem}.letter-envelope.is-open .close-letter{display:block}.letter-heart{position:absolute;z-index:6;width:8px;height:8px;transform:rotate(-45deg);background:var(--pink-bright);pointer-events:none;animation:letterHeartFloat 900ms ease-out forwards}.letter-heart:before,.letter-heart:after{content:"";position:absolute;width:8px;height:8px;border-radius:50%;background:inherit}.letter-heart:before{top:-4px}.letter-heart:after{left:4px}@keyframes letterHeartFloat{to{opacity:0;transform:translateY(-70px) rotate(-45deg) scale(.45)}}
 
     /* ===== Compact minimal music player ===== */
     .music-player{
@@ -175,10 +170,10 @@
     .music-player.is-collapsed .music-details{display:none}
     .music-disc-wrap{position:relative;box-sizing:border-box;width:40px;height:40px;flex:none}
     .music-player.is-collapsed .music-disc-wrap{width:44px;height:44px}
-    .music-disc-ring{position:absolute;inset:0;box-sizing:border-box;border-radius:50%;border:1.5px solid var(--pink-pale);border-top-color:var(--gold);animation:discSpin 8s linear infinite;animation-play-state:paused}
+    .music-disc-ring{position:absolute;inset:0;box-sizing:border-box;border-radius:50%;border:none;animation:none}
     .music-disc-ring.is-playing{animation-play-state:running}
     .music-player.is-collapsed .music-button{inset:2px;width:40px;height:40px}
-    .music-button{position:absolute;inset:0;z-index:2;box-sizing:border-box;width:40px;height:40px;margin:auto;display:grid;place-items:center;border:0;border-radius:50%;background:var(--wine);color:var(--paper);cursor:pointer;transition:transform 160ms ease}
+    .music-button{position:absolute;inset:0;z-index:2;box-sizing:border-box;width:40px;height:40px;margin:auto;padding:10px;display:grid;place-items:center;border:none;outline:none;border-radius:50%;background:var(--wine);color:var(--paper);cursor:pointer;transition:transform 160ms ease}
     .music-button:active{transform:scale(.94)}
     .play-icon{width:0;height:0;margin-left:2px;border-top:6px solid transparent;border-bottom:6px solid transparent;border-left:9px solid var(--paper)}
     .music-button.is-playing .play-icon{width:9px;height:11px;margin:0;border:0;background:linear-gradient(90deg,var(--paper) 0 38%,transparent 38% 62%,var(--paper) 62%)}
@@ -188,7 +183,7 @@
     .song-name,.song-artist{margin:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-family:"Trebuchet MS",Arial,sans-serif}
     .song-name{font-size:.85rem;font-weight:600;color:var(--ink)}
     .song-artist{margin-top:2px;font-size:.70rem;font-weight:400;color:var(--muted);opacity:.82}
-    .music-icon-button{box-sizing:border-box;width:40px;height:40px;padding:12px;display:grid;place-items:center;border:0;border-radius:50%;background:transparent;color:var(--wine);opacity:.70;cursor:pointer;transition:opacity 200ms ease,background 200ms ease,transform 200ms ease}
+    .music-icon-button{box-sizing:border-box;width:40px;height:40px;padding:12px;display:grid;place-items:center;border:none;outline:none;border-radius:50%;background:transparent;color:var(--wine);opacity:.70;cursor:pointer;transition:opacity 200ms ease,background 200ms ease,transform 200ms ease}
     .music-icon-button svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.8}
     .music-icon-button:hover{opacity:1;background:rgba(223,155,168,.12)}
     .music-icon-button:focus{outline:none}
@@ -400,11 +395,6 @@
         --lift: -7px;
         z-index: 3;
       }
-      .gift-button:hover .gift-stage{
-        transform:translateY(-3px) rotate(-1.5deg);
-        filter:drop-shadow(0 12px 18px rgba(223,155,168,.22));
-        transition:transform 200ms ease,filter 200ms ease;
-      }
     }
     @media (hover: none), (pointer: coarse) {
       .photo-card:hover { --lift: 0px; z-index: auto; }
@@ -424,7 +414,7 @@
       .music-player{width:min(260px,calc(100vw - 24px));grid-template-columns:40px minmax(0,1fr);gap:10px;padding:12px}
       .music-player.is-collapsed{width:44px;height:44px;padding:0}
     }
-    @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:1ms!important;animation-iteration-count:1!important;transition-duration:1ms!important;scroll-behavior:auto!important}.heart-field,.balloons,.sparkle,.floating-heart{display:none}.blob{animation:none!important}.disc{animation:none!important}.photo-card{transform:none!important}.gift-stage,.gift-lid,.gift-shadow,.bow,.tap-hand,.opening-title,.opening-sparkle{animation:none!important}.candle.out .smoke{animation:none!important}}
+    @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:1ms!important;animation-iteration-count:1!important;transition-duration:1ms!important;scroll-behavior:auto!important}.heart-field,.balloons,.sparkle,.floating-heart{display:none}.blob{animation:none!important}.disc{animation:none!important}.photo-card{transform:none!important}.candle.out .smoke{animation:none!important}}
     /* ===== PROFESSIONAL DESIGN SYSTEM OVERRIDES ===== */
     :root{
       --space-1:4px;--space-2:8px;--space-3:12px;--space-4:16px;
@@ -471,7 +461,6 @@
     .loader{background:rgba(255,248,239,.98);transition:opacity 700ms var(--ease),visibility 700ms var(--ease)}
     .opening{background:radial-gradient(circle at 50% 44%,rgba(255,255,255,.92),transparent 28rem),linear-gradient(135deg,var(--cream),var(--pink-pale))}
     .opening-inner{max-width:1100px}
-    .gift-button{max-width:360px}
 
     /* Hero */
     .hero{min-height:100dvh;padding:var(--space-9) var(--space-5);overflow:hidden}
@@ -596,7 +585,7 @@
     .letter-card{border:1px solid rgba(217,173,101,.22);border-radius:var(--radius-md);box-shadow:var(--shadow-md)}
     .letter-flap{background:linear-gradient(135deg,var(--pink-pale),var(--cream))}
     .letter-seal{box-shadow:var(--shadow-md)}
-    .letter-greeting,.letter-content p,.letter-signature{text-wrap:balance}
+    .letter-greeting,.letter-content p{text-wrap:balance}
 
     /* Viewer */
     .viewer-close,.viewer-arrow,.heart-viewer{border:1px solid rgba(255,255,255,.22);border-radius:50%;box-shadow:var(--shadow-md)}
@@ -653,7 +642,7 @@
       *{scroll-behavior:auto!important}
       .balloons,.heart-field,.hero-polaroid,.sparkle,.floating-heart{display:none!important}
       .hero-title .letter{opacity:1;transform:none;animation:none!important}
-      .photo-card,.music-disc-ring,.gift-stage{animation:none!important}
+      .photo-card,.music-disc-ring{animation:none!important}
       .photo-card{transform:none!important}
     }
     @media(max-width:360px){
@@ -670,29 +659,38 @@
 
   <section class="opening" id="opening">
     <div class="opening-inner">
-      <!-- CHANGE THE LABEL AND NAME HERE -->
-      <button class="gift-button" id="giftButton" type="button" aria-label="Open your birthday surprise">
-        <p class="opening-name" id="openingName">For Baby</p>
-        <div class="gift-stage" aria-hidden="true">
-          <div class="gift-shadow"></div>
-          <div class="gift">
-            <div class="gift-lid"></div>
-            <div class="ribbon-vertical"></div>
-            <div class="bow">
-              <span class="bow-loop left"></span>
-              <span class="bow-loop right"></span>
-              <span class="bow-knot"></span>
-              <span class="bow-tail left"></span>
-              <span class="bow-tail right"></span>
-            </div>
-          </div>
-          <span class="tap-hand">☝️</span>
-          <i class="opening-sparkle one"></i>
-          <i class="opening-sparkle two"></i>
-          <i class="opening-sparkle three"></i>
+      <div class="opening-button" id="openingButton" role="button" tabindex="0" aria-label="Open your birthday surprise">
+        <span class="gift-petal one"></span><span class="gift-petal two"></span><span class="gift-petal three"></span>
+        <i class="gift-spark one"></i><i class="gift-spark two"></i><i class="gift-spark three"></i>
+        <div class="gift-stage">
+          <div class="gift-glow"></div><div class="gift-shadow"></div>
+          <svg class="gift-art" id="giftArt" viewBox="0 0 400 390" role="img" aria-label="A wrapped maroon gift box">
+            <defs>
+              <!-- Gift colors can be tuned through the CSS variables below -->
+              <linearGradient id="giftBody" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="var(--gift-body-light)"/><stop offset=".58" stop-color="#811726"/><stop offset="1" stop-color="var(--gift-body-dark)"/></linearGradient>
+              <linearGradient id="giftLid" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="var(--gift-lid)"/><stop offset="1" stop-color="var(--gift-bow-dark)"/></linearGradient>
+              <linearGradient id="giftRibbon" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="var(--gift-ribbon-light)"/><stop offset=".55" stop-color="var(--gold)"/><stop offset="1" stop-color="var(--gift-ribbon-dark)"/></linearGradient>
+              <linearGradient id="giftBow" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="var(--gift-bow)"/><stop offset="1" stop-color="var(--gift-bow-dark)"/></linearGradient>
+            </defs>
+            <rect class="gift-body" x="92" y="175" width="216" height="150" rx="18"/>
+            <path class="gift-highlight" d="M112 193 C112 225 112 282 112 306"/>
+            <rect class="gift-lid" x="72" y="145" width="256" height="52" rx="12"/>
+            <rect class="gift-ribbon" x="176" y="145" width="48" height="180"/>
+            <rect class="gift-ribbon" x="72" y="157" width="256" height="28" rx="8"/>
+            <g class="gift-bow">
+              <path class="gift-bow-loop" d="M200 148 C166 112 112 112 122 154 C132 190 182 180 200 148Z"/>
+              <path class="gift-bow-loop" d="M200 148 C234 112 288 112 278 154 C268 190 218 180 200 148Z"/>
+              <path class="gift-bow-tail" d="M190 154 L158 208 L196 188Z"/>
+              <path class="gift-bow-tail" d="M210 154 L242 208 L204 188Z"/>
+              <circle class="gift-bow-knot" cx="200" cy="148" r="18"/>
+            </g>
+          </svg>
+          <span class="touch-hand" id="touchHand">☝️</span>
         </div>
-        <p class="opening-title">Tap to open your surprise</p>
-      </button>
+        <p class="gift-title" id="openingHint">Tap to open your surprise</p>
+        <p class="gift-subtitle">A little something for you</p>
+        <div class="gift-flash"></div>
+      </div>
     </div>
   </section>
 
@@ -741,7 +739,6 @@
         <span class="letter-mini-heart" aria-hidden="true">♥</span>
         <p class="letter-greeting" id="letterGreeting"></p>
         <div class="letter-content" id="letterContent"></div>
-        <p class="letter-signature"><span id="letterSignature"></span></p>
         <button class="close-letter" id="closeLetter" type="button">Close letter</button>
       </article>
     </div>
@@ -799,7 +796,6 @@
     const birthdayName="Baby";
     const ageTurning=21;
     const birthdayDate="November 23, 2005";
-    const fromName="My name";
     /* ===== CHANGE SONG TITLE AND ARTIST HERE ===== */
     const musicSongTitle="Song title";
     const musicSongArtist="Artist";
@@ -810,7 +806,6 @@
       "May this new year bring you all the joy you give to others.",
       `Happy Birthday, ${birthdayName}.`
     ];
-    const letterSignature=`Love, ${fromName}`;
     /* ===== CHANGE FINAL MESSAGE HERE ===== */
     const finalMessage=`I love you, ${birthdayName}`;
     /* ===== PHOTO ARRAY: FILE, CAPTION, AND CHAPTER ===== */
@@ -826,7 +821,9 @@
       {file:"photo9.png",caption:"Adventure was sweeter with you beside me.",chapter:"Adventures"},
       {file:"photo10.png",caption:"Laughing together at the start of our next stop.",chapter:"Silly faces"},
       {file:"photo12.png",caption:"Barefoot by the sea, holding on to every moment.",chapter:"Adventures",fit:"cover",pos:"center 55%"},
-      {file:"photo13.png",caption:"Still laughing, even when you try to steal my spotlight.",chapter:"Silly faces",fit:"cover",pos:"center 25%"}
+      {file:"photo13.png",caption:"Still laughing, even when you try to steal my spotlight.",chapter:"Silly faces",fit:"cover",pos:"center 25%"},
+      {file:"photo14.png",caption:"A quiet sushi moment, chin in hand and heart at ease.",chapter:"Sweet moments",fit:"cover",pos:"center 30%"},
+      {file:"photo15.png",caption:"That playful pout has a charm all its own.",chapter:"Silly faces",fit:"cover",pos:"center 30%"}
     ];
 
     const $=id=>document.getElementById(id),reduced=matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -841,7 +838,6 @@
     function burst(x,y){if(reduced)return;for(let i=0;i<10;i++){const h=document.createElement("i");h.className="burst-heart";h.style.left=`${x}px`;h.style.top=`${y}px`;h.style.setProperty("--dx",`${Math.cos(i*Math.PI/5)*55}px`);h.style.setProperty("--dy",`${Math.sin(i*Math.PI/5)*55}px`);document.body.append(h);setTimeout(()=>h.remove(),750)}}
 
     // Apply editable birthday variables
-    $("openingName").textContent=`For ${birthdayName}`;
     $("heroTitle").textContent=`Happy Birthday, ${birthdayName}!`;
     document.querySelector(".hero-age").textContent=`Turning ${ageTurning} today`;
     document.querySelector(".hero-date").textContent=birthdayDate;
@@ -884,18 +880,49 @@
       });
     })();
 
-    // Loading and opening gift
+    // Loading and gift intro
     const imagePromises=photos.map(p=>new Promise(resolve=>{const img=new Image();img.onload=img.onerror=resolve;img.src=p.file}));
-    Promise.all(imagePromises).then(()=>setTimeout(()=>$("loader").classList.add("is-hidden"),800));
-    let openingGift=false;
-    $("giftButton").addEventListener("click",()=>{
-      if(openingGift)return;
-      openingGift=true;
-      $("opening").classList.add("is-opening");
-      setTimeout(()=>confetti(innerWidth/2,innerHeight*.48,reduced?1:110),reduced?200:520);
-      try{audio.play().catch(()=>showError("Sorry, the music could not start. Please check that music.mp3 is in this folder."))}catch(error){showError("Sorry, the music could not start. Please check that music.mp3 is in this folder.")}updateMusicState();
-      setTimeout(()=>{$("opening").style.display="none";document.querySelector(".hero").scrollIntoView({behavior:reduced?"auto":"smooth"})},reduced?500:1600);
-    });
+    Promise.all(imagePromises).then(()=>{setTimeout(()=>$("loader").classList.add('is-hidden'),800)});
+    let giftOpening=false;
+    function giftBurst(){
+      if(reduced)return;
+      for(let i=0;i<24;i++){
+        const item=document.createElement("i");
+        item.className=`gift-rise ${i%3===0?"heart":i%3===1?"balloon":"spark"}`;
+        item.style.left=`${45+(Math.random()*10)}%`;
+        item.style.top=`${52+(Math.random()*8)}%`;
+        item.style.setProperty("--dx",`${(Math.random()-.5)*280}px`);
+        item.style.animationDuration=`${900+Math.random()*700}ms`;
+        $("opening").append(item);
+        setTimeout(()=>item.remove(),1700);
+      }
+    }
+    function openGift(){
+      if(giftOpening)return;
+      giftOpening=true;
+      try{audio.play().catch(()=>showError('Sorry, the music could not start.'))}catch(error){showError('Sorry, the music could not start.')}
+      $("opening").classList.add('is-opening');
+      giftBurst();
+      confetti(innerWidth/2,innerHeight*.58,130);
+      setTimeout(()=>{
+        $("opening").style.display='none';
+        document.querySelector('.hero').scrollIntoView({behavior:reduced?'auto':'smooth'});
+      },reduced?500:1500);
+    }
+    const giftButton=$("openingButton");
+    giftButton.addEventListener('click',openGift);
+    giftButton.addEventListener('keydown',event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();openGift()}});
+    if(window.matchMedia("(hover: hover) and (pointer: fine)").matches){
+      giftButton.addEventListener("mousemove",event=>{
+        if(giftOpening||reduced)return;
+        const rect=giftButton.getBoundingClientRect();
+        const x=(event.clientX-(rect.left+rect.width/2))/rect.width;
+        const y=(event.clientY-(rect.top+rect.height/2))/rect.height;
+        $("giftArt").style.transform=`rotateX(${(-y*4).toFixed(2)}deg) rotateY(${(x*5).toFixed(2)}deg)`;
+      });
+      giftButton.addEventListener("mouseleave",()=>{$("giftArt").style.transform=""});
+    }
+    if(!reduced)setTimeout(()=>{const hand=$("touchHand");if(hand&&!giftOpening){hand.classList.add('is-visible');setTimeout(()=>hand.classList.remove('is-visible'),1900)}},3000);
 
     // Cake
     let blowingCandles=false;
@@ -1007,7 +1034,7 @@
           card.style.setProperty("--card-index",index);
           card.dataset.index=index;
           card.setAttribute("aria-label",`Open photo ${index+1}: ${photo.caption}`);
-          if(photo.file==="photo12.png")card.classList.add("portrait-tall");
+          if(["photo12.png","photo14.png","photo15.png"].includes(photo.file))card.classList.add("portrait-tall");
           const tape=document.createElement("span");
           tape.className="tape";
           if(index%3!==0)tape.hidden=true;
@@ -1023,7 +1050,7 @@
           if(fit==="contain")card.classList.add("fit-contain");
           image.addEventListener("load",()=>{
             const shape=image.naturalWidth/image.naturalHeight;
-            if(photo.file==="photo12.png")card.style.setProperty("--photo-ratio","9/16");
+            if(["photo12.png","photo14.png","photo15.png"].includes(photo.file))card.style.setProperty("--photo-ratio","9/16");
             else if(shape<.92)card.style.setProperty("--photo-ratio",`${image.naturalWidth}/${image.naturalHeight}`);
             else if(shape>1.12)card.style.setProperty("--photo-ratio","4/3");
             else card.style.setProperty("--photo-ratio","1/1");
@@ -1041,7 +1068,6 @@
     // Letter
     $("letterGreeting").textContent=letterGreeting;
     $("letterContent").innerHTML=letterLines.map(line=>`<p>${line}</p>`).join("");
-    $("letterSignature").textContent=letterSignature;
     let letterAnimating=false;
     function letterHearts(){
       if(reduced)return;
@@ -1078,9 +1104,8 @@
         letterHearts();
         const lines=$("letterContent").querySelectorAll("p");
         lines.forEach((line,i)=>line.style.animationDelay=`${400+i*600}ms`);
-        $("letterSignature").style.animationDelay=`${400+lines.length*600+300}ms`;
       },720);
-      setTimeout(()=>{letterAnimating=false;$("closeLetter").focus()},720+400+letterLines.length*600+1000);
+      setTimeout(()=>{letterAnimating=false;$("closeLetter").focus()},720+400+letterLines.length*600+500);
     }
     function closeLetter(){
       if(letterAnimating)return;
